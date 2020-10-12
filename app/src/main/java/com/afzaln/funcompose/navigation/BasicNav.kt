@@ -25,3 +25,37 @@ fun VeryBasicNav() {
         }
     }
 }
+
+/**
+ * An existing navController can be passed to the NavHost.
+ * This functionality can be used to control and observe
+ * the backstack from outside of the NavGraph.
+ */
+@Composable
+fun BasicNav(
+    navController: NavHostController = rememberNavController(),
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "Profile"
+    ) {
+        composable("Profile") {
+            val current = AmbientNavController.current.currentDestination
+            Crossfade(current = current) {
+                Profile()
+            }
+        }
+        composable("Dashboard") {
+            val current = AmbientNavController.current.currentDestination
+            Crossfade(current = current) {
+                Dashboard()
+            }
+        }
+        composable("Scrollable") {
+            val current = AmbientNavController.current.currentDestination
+            Crossfade(current = current) {
+                Scrollable(this)
+            }
+        }
+    }
+}
