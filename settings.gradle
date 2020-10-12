@@ -1,0 +1,3 @@
+rootProject.name = "Fun Compose"
+include ':app'
+
