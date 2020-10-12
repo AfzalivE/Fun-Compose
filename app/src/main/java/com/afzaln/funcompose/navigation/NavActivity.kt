@@ -2,12 +2,13 @@ package com.afzaln.funcompose.navigation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.navigation.currentBackStackEntryAsState
+import androidx.compose.navigation.navigate
 import androidx.compose.navigation.rememberNavController
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,13 +32,25 @@ private fun FunComposeApp() {
     FunComposeTheme {
         // A surface container using the 'background' color from the theme
         Surface(color = MaterialTheme.colors.background) {
-            Scaffold(topBar = {
-                TopAppBar(title = {
-                    Text(current?.destination?.toScreen()?.title ?: "")
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(current?.destination?.toScreen()?.title ?: "")
+                        },
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate(Screen.Dashboard.title)
+                                }, icon = {
+                                    Icon(asset = Icons.Default.Settings)
+                                }
+                            )
+                        }
+                    )
+                }, bodyContent = {
+                    BasicNav(navController)
                 })
-            }, bodyContent = {
-                BasicNav(navController)
-            })
         }
     }
 }
