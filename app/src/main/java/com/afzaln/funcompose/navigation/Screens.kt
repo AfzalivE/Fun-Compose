@@ -54,6 +54,9 @@ fun TabContent(screen: Screen) {
 @Composable
 fun NavDashboard(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
+    navController.addOnDestinationChangedListener { navController, _, _ ->
+        navState.value = navController.saveState() ?: Bundle()
+    }
     navController.restoreState(navState.value)
 
     NavHost(
@@ -72,7 +75,6 @@ fun NavDashboard(navState: MutableState<Bundle>) {
         // workaround for issue where back press is intercepted
         // outside this tab, even after this Composable is disposed
         navController.enableOnBackPressed(false)
-        navState.value = navController.saveState() ?: Bundle()
     }
 }
 
