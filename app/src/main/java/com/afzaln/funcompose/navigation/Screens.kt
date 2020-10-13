@@ -9,10 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.Button
 import androidx.compose.material.ListItem
 import androidx.compose.navigation.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.onDispose
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.get
 
 sealed class Screen(val title: String) {
     object Profile : Screen("Profile")
@@ -51,7 +54,10 @@ fun TabContent(screen: Screen) {
 
 @Composable
 fun NavDashboard() {
+    val navController = rememberNavController()
+
     NavHost(
+        navController = navController,
         startDestination = "Dashboard"
     ) {
         composable(Screen.Dashboard.title) {
@@ -60,6 +66,12 @@ fun NavDashboard() {
         composable(Screen.DashboardDetail.title) {
             Text("Some Dashboard detail")
         }
+    }
+
+    onDispose {
+        // workaround for issue where back press is intercepted
+        // outside this tab, even after this Composable is disposed
+        navController.enableOnBackPressed(false)
     }
 }
 
