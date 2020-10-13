@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 
 /**
  * The navController is created automatically by
- * the NavHost constructor and is only available
+ * the NavHost composable and is only available
  * inside the NavGraph using AmbientNavController.current
  */
 @Composable
