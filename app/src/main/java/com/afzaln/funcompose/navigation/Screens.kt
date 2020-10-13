@@ -85,6 +85,9 @@ fun NavStateSaver(): Saver<MutableState<Bundle>, out Any> = Saver(
 @Composable
 fun NavScrollable(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
+    navController.addOnDestinationChangedListener { navController, _, _ ->
+        navState.value = navController.saveState() ?: Bundle()
+    }
     navController.restoreState(navState.value)
 
     NavHost(
@@ -103,7 +106,6 @@ fun NavScrollable(navState: MutableState<Bundle>) {
         // workaround for issue where back press is intercepted
         // outside this tab, even after this Composable is disposed
         navController.enableOnBackPressed(false)
-        navState.value = navController.saveState() ?: Bundle()
     }
 }
 
