@@ -71,7 +71,9 @@ fun Dashboard() {
 
 /**
  * An example of how to add a dynamic destination to
- * an existing NavGraph
+ * an existing NavGraph but doing this will cause a crash
+ * on process restore. Possibly because this destination
+ * doesn't exist in the NavGraph.
  */
 @Composable
 fun Scrollable(navGraphBuilder: NavGraphBuilder) {
