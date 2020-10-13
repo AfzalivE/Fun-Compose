@@ -10,12 +10,39 @@ import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.Button
 import androidx.compose.material.ListItem
 import androidx.compose.navigation.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onDispose
+import androidx.compose.runtime.savedinstancestate.Saver
+import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.get
 
 sealed class Screen(val title: String) {
+    fun saveState(): Bundle {
+        return Bundle().apply { putString(KEY_TITLE, title) }
+    }
+
+    companion object {
+        fun restoreState(bundle: Bundle): Screen {
+            val title = bundle.getString(KEY_TITLE, "Profile")
+            return when (title) {
+                Profile.title -> Profile
+                Dashboard.title -> Dashboard
+                Scrollable.title -> Scrollable
+                PhraseDetail.title -> PhraseDetail
+                DashboardDetail.title -> DashboardDetail
+                else -> Profile
+            }
+        }
+
+        const val KEY_TITLE = "title"
+    }
+
     object Profile : Screen("Profile")
     object Dashboard : Screen("Dashboard")
     object Scrollable : Screen("Scrollable")
@@ -42,7 +69,7 @@ fun NavDestination.toScreen(): Screen {
 
 @Composable
 fun TabContent(screen: Screen) {
-    val navState = remember { mutableStateOf(Bundle()) }
+    val navState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
     when (screen) {
         Screen.Profile -> Profile()
         Screen.Dashboard -> NavDashboard(navState)
@@ -50,6 +77,11 @@ fun TabContent(screen: Screen) {
         else -> Profile()
     }
 }
+
+fun NavStateSaver(): Saver<MutableState<Bundle>, out Any> = Saver(
+    save = { it.value },
+    restore = { mutableStateOf(it) }
+)
 
 @Composable
 fun NavDashboard(navState: MutableState<Bundle>) {
