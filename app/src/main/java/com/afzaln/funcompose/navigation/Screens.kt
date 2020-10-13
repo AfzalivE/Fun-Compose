@@ -18,9 +18,7 @@ import androidx.compose.runtime.savedinstancestate.Saver
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.get
+import androidx.navigation.*
 
 sealed class Screen(val title: String) {
     fun saveState(): Bundle {
@@ -131,12 +129,6 @@ fun Dashboard() {
     }
 }
 
-/**
- * An example of how to add a dynamic destination to
- * an existing NavGraph but doing this will cause a crash
- * on process restore. Possibly because this destination
- * doesn't exist in the NavGraph.
- */
 @Composable
 fun NoClickScrollable() {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
