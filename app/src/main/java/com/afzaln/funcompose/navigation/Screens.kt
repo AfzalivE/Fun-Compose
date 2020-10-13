@@ -8,21 +8,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.Button
 import androidx.compose.material.ListItem
-import androidx.compose.navigation.AmbientNavController
-import androidx.compose.navigation.ComposeNavigator
-import androidx.compose.navigation.navigate
-import androidx.compose.runtime.Composable
+import androidx.compose.navigation.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.get
+import androidx.navigation.*
 
 sealed class Screen(val title: String) {
     object Profile : Screen("Profile")
     object Dashboard : Screen("Dashboard")
     object Scrollable : Screen("Scrollable")
     object PhraseDetail : Screen("PhraseDetail")
+    object DashboardDetail : Screen("DashboardDetail")
 
     /** hack to generate the same Destination ID that the Compose Navigation lib generates **/
     val id: Int
@@ -43,15 +40,33 @@ fun NavDestination.toScreen(): Screen {
 }
 
 @Composable
+fun TabContent(screen: Screen) {
+    when (screen) {
+        Screen.Profile -> Profile()
+        Screen.Dashboard -> NavDashboard()
+        Screen.Scrollable -> NoClickScrollable()
+        else -> Profile()
+    }
+}
+
+@Composable
+fun NavDashboard() {
+    NavHost(
+        startDestination = "Dashboard"
+    ) {
+        composable(Screen.Dashboard.title) {
+            Dashboard()
+        }
+        composable(Screen.DashboardDetail.title) {
+            Text("Some Dashboard detail")
+        }
+    }
+}
+
+@Composable
 fun Profile() {
-    val navController = AmbientNavController.current
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         Text(text = Screen.Profile.title)
-        Button(
-            onClick = { navController.navigate(Screen.Dashboard.id) },
-        ) {
-            Text("Open Dashboard")
-        }
     }
 }
 
@@ -61,9 +76,9 @@ fun Dashboard() {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         Text(text = Screen.Dashboard.title)
         Button(
-            content = { Text("Open Scrollable") },
+            content = { Text("Open Dashboard Detail") },
             onClick = {
-                navController.navigate(Screen.Scrollable.title)
+                navController.navigate(Screen.DashboardDetail.title)
             }
         )
     }
@@ -74,6 +89,21 @@ fun Dashboard() {
  * an existing NavGraph but doing this will cause a crash
  * on process restore. Possibly because this destination
  * doesn't exist in the NavGraph.
+ */
+@Composable
+fun NoClickScrollable() {
+    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
+        LazyColumnFor(items = phrases) {
+            ListItem(
+                text = { Text(text = it) },
+            )
+        }
+    }
+}
+
+/**
+ * An example of how to add a dynamic destination to
+ * an existing NavGraph
  */
 @Composable
 fun Scrollable(navGraphBuilder: NavGraphBuilder) {
