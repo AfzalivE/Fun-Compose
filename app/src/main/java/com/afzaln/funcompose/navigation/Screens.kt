@@ -67,11 +67,12 @@ fun NavDestination.toScreen(): Screen {
 
 @Composable
 fun TabContent(screen: Screen) {
-    val navState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
+    val dashboardNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
+    val scrollableNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
     when (screen) {
         Screen.Profile -> Profile()
-        Screen.Dashboard -> NavDashboard(navState)
-        Screen.Scrollable -> NoClickScrollable()
+        Screen.Dashboard -> NavDashboard(dashboardNavState)
+        Screen.Scrollable -> NavScrollable(scrollableNavState)
         else -> Profile()
     }
 }
@@ -80,6 +81,31 @@ fun NavStateSaver(): Saver<MutableState<Bundle>, out Any> = Saver(
     save = { it.value },
     restore = { mutableStateOf(it) }
 )
+
+@Composable
+fun NavScrollable(navState: MutableState<Bundle>) {
+    val navController = rememberNavController()
+    navController.restoreState(navState.value)
+
+    NavHost(
+        navController = navController,
+        startDestination = "Scrollable"
+    ) {
+        composable("Scrollable") {
+            Scrollable(this)
+        }
+        composable("PhraseDetail") {
+            PhraseDetail()
+        }
+    }
+
+    onDispose {
+        // workaround for issue where back press is intercepted
+        // outside this tab, even after this Composable is disposed
+        navController.enableOnBackPressed(false)
+        navState.value = navController.saveState() ?: Bundle()
+    }
+}
 
 @Composable
 fun NavDashboard(navState: MutableState<Bundle>) {
