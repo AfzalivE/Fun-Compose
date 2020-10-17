@@ -49,7 +49,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.navigation:navigation:1.0.0-SNAPSHOT"
+    implementation "androidx.navigation:navigation-compose:1.0.0-SNAPSHOT"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-beta01'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -2,48 +2,13 @@ package com.afzaln.funcompose.navigation
 
 import android.os.Bundle
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.material.Button
-import androidx.compose.material.ListItem
-import androidx.compose.navigation.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onDispose
-import androidx.compose.runtime.savedinstancestate.Saver
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.core.os.bundleOf
 
 sealed class Screen(val title: String) {
-    fun saveState(): Bundle {
-        return Bundle().apply { putString(KEY_TITLE, title) }
-    }
-
-    companion object {
-        fun restoreState(bundle: Bundle): Screen {
-            val title = bundle.getString(KEY_TITLE, "Profile")
-            return when (title) {
-                Profile.title -> Profile
-                Dashboard.title -> Dashboard
-                Scrollable.title -> Scrollable
-                PhraseDetail.title -> PhraseDetail
-                DashboardDetail.title -> DashboardDetail
-                else -> Profile
-            }
-        }
-
-        const val KEY_TITLE = "title"
-    }
-
     object Profile : Screen("Profile")
     object Dashboard : Screen("Dashboard")
-    object Scrollable : Screen("Scrollable")
+    object Phrases : Screen("Phrases")
     object PhraseDetail : Screen("PhraseDetail")
     object DashboardDetail : Screen("DashboardDetail")
 
@@ -53,153 +18,33 @@ sealed class Screen(val title: String) {
             return title.hashCode() + 0x00010000
         }
 
-}
-
-fun NavDestination.toScreen(): Screen {
-    return when (id) {
-        Screen.Profile.id -> Screen.Profile
-        Screen.Dashboard.id -> Screen.Dashboard
-        Screen.Scrollable.id -> Screen.Scrollable
-        Screen.PhraseDetail.id -> Screen.PhraseDetail
-        else -> Screen.Profile
-    }
-}
-
-@Composable
-fun TabContent(screen: Screen) {
-    val dashboardNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
-    val scrollableNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
-    when (screen) {
-        Screen.Profile -> Profile()
-        Screen.Dashboard -> NavDashboard(dashboardNavState)
-        Screen.Scrollable -> NavScrollable(scrollableNavState)
-        else -> Profile()
-    }
-}
-
-fun NavStateSaver(): Saver<MutableState<Bundle>, out Any> = Saver(
-    save = { it.value },
-    restore = { mutableStateOf(it) }
-)
-
-@Composable
-fun NavScrollable(navState: MutableState<Bundle>) {
-    val navController = rememberNavController()
-    navController.addOnDestinationChangedListener { navController, _, _ ->
-        navState.value = navController.saveState() ?: Bundle()
-    }
-    navController.restoreState(navState.value)
-
-    NavHost(
-        navController = navController,
-        startDestination = "Scrollable"
-    ) {
-        composable("Scrollable") {
-            Scrollable(this)
-        }
-        composable("PhraseDetail") {
-            PhraseDetail()
-        }
+    fun saveState(): Bundle {
+        return bundleOf(KEY_TITLE to title)
     }
 
-    onDispose {
-        // workaround for issue where back press is intercepted
-        // outside this tab, even after this Composable is disposed
-        navController.enableOnBackPressed(false)
-    }
-}
-
-@Composable
-fun NavDashboard(navState: MutableState<Bundle>) {
-    val navController = rememberNavController()
-    navController.addOnDestinationChangedListener { navController, _, _ ->
-        navState.value = navController.saveState() ?: Bundle()
-    }
-    navController.restoreState(navState.value)
-
-    NavHost(
-        navController = navController,
-        startDestination = "Dashboard"
-    ) {
-        composable(Screen.Dashboard.title) {
-            Dashboard()
-        }
-        composable(Screen.DashboardDetail.title) {
-            Text("Some Dashboard detail")
-        }
-    }
-
-    onDispose {
-        // workaround for issue where back press is intercepted
-        // outside this tab, even after this Composable is disposed
-        navController.enableOnBackPressed(false)
-    }
-}
-
-@Composable
-fun Profile() {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        Text(text = Screen.Profile.title)
-    }
-}
-
-@Composable
-fun Dashboard() {
-    val navController = AmbientNavController.current
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        Text(text = Screen.Dashboard.title)
-        Button(
-            content = { Text("Open Dashboard Detail") },
-            onClick = {
-                navController.navigate(Screen.DashboardDetail.title)
+    companion object {
+        fun restoreState(bundle: Bundle): Screen {
+            val title = bundle.getString(KEY_TITLE, Profile.title)
+            return when (title) {
+                Profile.title -> Profile
+                Dashboard.title -> Dashboard
+                DashboardDetail.title -> DashboardDetail
+                Phrases.title -> Phrases
+                PhraseDetail.title -> PhraseDetail
+                else                  -> Profile
             }
-        )
-    }
-}
-
-@Composable
-fun NoClickScrollable() {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        LazyColumnFor(items = phrases) {
-            ListItem(
-                text = { Text(text = it) },
-            )
         }
-    }
-}
 
-/**
- * An example of how to add a dynamic destination to
- * an existing NavGraph
- */
-@Composable
-fun Scrollable(navGraphBuilder: NavGraphBuilder) {
-    val navController = AmbientNavController.current
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        navController.graph.addDestination(
-            ComposeNavigator.Destination(
-                navGraphBuilder.provider[ComposeNavigator::class]
-            ) {
-                PhraseDetail()
-            }.apply { id = Screen.PhraseDetail.id })
-
-        LazyColumnFor(items = phrases) {
-            ListItem(
-                text = { Text(text = it) },
-                modifier = Modifier.clickable(onClick = {
-                    navController.navigate(Screen.PhraseDetail.title)
-                })
-            )
-        }
+        const val KEY_TITLE = "title"
     }
 }
 
 @Composable
-fun PhraseDetail() {
-    Text(text = "This will have better data when NavArgs support is added soon!")
+fun PhraseDetail(phrase: String = "no phrase") {
+    Text(text = phrase)
 }
 
-private val phrases = listOf(
+internal val phrases = listOf(
     "Easy As Pie",
     "Wouldn't Harm a Fly",
     "No-Brainer",
