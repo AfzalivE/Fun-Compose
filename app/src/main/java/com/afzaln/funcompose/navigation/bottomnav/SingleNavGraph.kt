@@ -16,10 +16,11 @@ import androidx.compose.runtime.savedinstancestate.Saver
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.*
-import com.afzaln.funcompose.navigation.simple.Profile
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.simple.Phrases
+import com.afzaln.funcompose.navigation.simple.Profile
 import com.afzaln.funcompose.ui.FunComposeTheme
 
 @Composable
@@ -82,8 +83,8 @@ fun SingleNavTabContent(screen: Screen) {
     when (screen) {
         Screen.Profile -> ProfileTab()
         Screen.Dashboard -> DashboardTab(dashboardNavState)
-        Screen.Phrases   -> Phrases(clickable = false)
-        else             -> Profile()
+        Screen.Phrases -> Phrases(clickable = false)
+        else -> Profile()
     }
 }
 
@@ -98,10 +99,20 @@ fun ProfileTab() {
 fun DashboardTab(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
 
-    navController.addOnDestinationChangedListener { controller, _, _ ->
-        navState.value = controller.saveState() ?: Bundle()
+    onCommit {
+        val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
+            navState.value = controller.saveState() ?: Bundle()
+        }
+        navController.addOnDestinationChangedListener(callback)
+        navController.restoreState(navState.value)
+
+        onDispose {
+            navController.removeOnDestinationChangedListener(callback)
+            // workaround for issue where back press is intercepted
+            // outside this tab, even after this Composable is disposed
+            navController.enableOnBackPressed(false)
+        }
     }
-    navController.restoreState(navState.value)
 
     NavHost(
         navController = navController,
@@ -111,12 +122,6 @@ fun DashboardTab(navState: MutableState<Bundle>) {
         composable(Screen.DashboardDetail) {
             Text("Some Dashboard detail")
         }
-    }
-
-    onDispose {
-        // workaround for issue where back press is intercepted
-        // outside this tab, even after this Composable is disposed
-        navController.enableOnBackPressed(false)
     }
 }
 

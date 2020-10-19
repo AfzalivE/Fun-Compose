@@ -1,11 +1,9 @@
 package com.afzaln.funcompose.navigation.bottomnav
 
 import android.os.Bundle
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onDispose
+import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -35,10 +33,20 @@ fun MultiNavTabContent(screen: Screen) {
 @Composable
 fun NavPhrases(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
-    navController.addOnDestinationChangedListener { navController, _, _ ->
-        navState.value = navController.saveState() ?: Bundle()
+
+    onCommit {
+        val callback = NavController.OnDestinationChangedListener { navController, _, _ ->
+            navState.value = navController.saveState() ?: Bundle()
+        }
+        navController.addOnDestinationChangedListener(callback)
+        navController.restoreState(navState.value)
+        onDispose {
+            navController.removeOnDestinationChangedListener(callback)
+            // workaround for issue where back press is intercepted
+            // outside this tab, even after this Composable is disposed
+            navController.enableOnBackPressed(false)
+        }
     }
-    navController.restoreState(navState.value)
 
     NavHost(
         navController = navController,
@@ -46,12 +54,6 @@ fun NavPhrases(navState: MutableState<Bundle>) {
     ) {
         composable(Screen.Phrases) { Phrases() }
         composable(Screen.PhraseDetail) { PhraseDetail(it.arguments?.get("phrase") as String) }
-    }
-
-    onDispose {
-        // workaround for issue where back press is intercepted
-        // outside this tab, even after this Composable is disposed
-        navController.enableOnBackPressed(false)
     }
 }
 
