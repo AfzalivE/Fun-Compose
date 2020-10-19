@@ -10,8 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import com.afzaln.funcompose.navigation.Dashboard
-import com.afzaln.funcompose.navigation.Profile
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.ui.FunComposeTheme
 

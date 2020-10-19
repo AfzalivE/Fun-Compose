@@ -1,4 +1,4 @@
-package com.afzaln.funcompose.navigation
+package com.afzaln.funcompose.navigation.simple
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -11,6 +11,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
@@ -18,6 +19,8 @@ import androidx.navigation.compose.AmbientNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
+import com.afzaln.funcompose.navigation.Screen
+import com.afzaln.funcompose.navigation.phrases
 import com.afzaln.funcompose.ui.FunComposeTheme
 
 @Composable
@@ -53,7 +56,7 @@ fun Profile() {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         Text(text = Screen.Profile.title)
         Button(
-            onClick = { navController.navigate(Screen.Dashboard, bundleOf("title" to "My Dashboard Title")) },
+            onClick = { navController.navigate(Screen.Dashboard, bundleOf("title" to "Args from Profile")) },
         ) {
             Text("Open Dashboard")
         }
@@ -62,7 +65,10 @@ fun Profile() {
 
 @Composable
 fun Dashboard(title: String = Screen.Dashboard.title) {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
+    Column(
+        modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp)),
+        horizontalAlignment = Alignment.End
+    ) {
         Text(text = title)
         Button(
             content = { Text("Useless button") },

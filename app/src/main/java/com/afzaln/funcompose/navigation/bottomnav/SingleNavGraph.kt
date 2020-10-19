@@ -17,9 +17,9 @@ import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
-import com.afzaln.funcompose.navigation.Profile
+import com.afzaln.funcompose.navigation.simple.Profile
 import com.afzaln.funcompose.navigation.Screen
-import com.afzaln.funcompose.navigation.Phrases
+import com.afzaln.funcompose.navigation.simple.Phrases
 import com.afzaln.funcompose.ui.FunComposeTheme
 
 @Composable

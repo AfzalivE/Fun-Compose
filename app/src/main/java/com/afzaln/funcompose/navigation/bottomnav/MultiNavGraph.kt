@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.afzaln.funcompose.navigation.PhraseDetail
 import com.afzaln.funcompose.navigation.Screen
-import com.afzaln.funcompose.navigation.Phrases
+import com.afzaln.funcompose.navigation.simple.Phrases
 
 @Composable
 fun MultiBottomNavApp() {
