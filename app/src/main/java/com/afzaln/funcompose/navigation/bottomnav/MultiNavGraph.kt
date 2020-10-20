@@ -52,7 +52,7 @@ fun NavPhrases(navState: MutableState<Bundle>) {
         navController = navController,
         startDestination = Screen.Phrases
     ) {
-        composable(Screen.Phrases) { Phrases() }
+        composable(Screen.Phrases) { Phrases(navController) }
         composable(Screen.PhraseDetail) { PhraseDetail(it.arguments?.get("phrase") as String) }
     }
 }

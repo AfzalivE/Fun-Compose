@@ -15,10 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
-import androidx.navigation.compose.AmbientNavController
-import androidx.navigation.compose.NavHost
+import androidx.navigation.NavController
+import androidx.navigation.compose.*
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.phrases
 import com.afzaln.funcompose.ui.FunComposeTheme
@@ -40,8 +39,9 @@ fun SimpleNavApp() {
  */
 @Composable
 fun SimpleNav() {
-    NavHost(startDestination = Screen.Profile) {
-        composable(Screen.Profile) { Profile() }
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = Screen.Profile) {
+        composable(Screen.Profile) { Profile(navController) }
         composable(Screen.Dashboard) { backStackEntry ->
             Dashboard(
                 title = backStackEntry.arguments?.get("title") as String
@@ -51,8 +51,7 @@ fun SimpleNav() {
 }
 
 @Composable
-fun Profile() {
-    val navController = AmbientNavController.current
+fun Profile(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         Text(text = Screen.Profile.title)
         Button(
@@ -78,11 +77,10 @@ fun Dashboard(title: String = Screen.Dashboard.title) {
 }
 
 @Composable
-fun Phrases(clickable: Boolean = true) {
-    val navController = AmbientNavController.current
+fun Phrases(navController: NavController? = null) {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         LazyColumnFor(items = phrases) {
-            if (clickable) {
+            if (navController != null) {
                 ListItem(
                     text = { Text(text = it) },
                     modifier = Modifier.clickable(onClick = {

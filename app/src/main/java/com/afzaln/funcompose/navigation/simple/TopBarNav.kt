@@ -58,7 +58,7 @@ fun BasicNav(
         navController = navController,
         startDestination = Screen.Profile
     ) {
-        composable(Screen.Profile) { Profile() }
+        composable(Screen.Profile) { Profile(navController) }
         composable(Screen.Dashboard) { Dashboard() }
     }
 }

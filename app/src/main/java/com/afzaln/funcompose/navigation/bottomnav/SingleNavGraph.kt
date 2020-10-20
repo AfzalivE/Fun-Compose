@@ -20,7 +20,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.simple.Phrases
-import com.afzaln.funcompose.navigation.simple.Profile
 import com.afzaln.funcompose.ui.FunComposeTheme
 
 @Composable
@@ -83,8 +82,8 @@ fun SingleNavTabContent(screen: Screen) {
     when (screen) {
         Screen.Profile -> ProfileTab()
         Screen.Dashboard -> DashboardTab(dashboardNavState)
-        Screen.Phrases -> Phrases(clickable = false)
-        else -> Profile()
+        Screen.Phrases -> Phrases()
+        else -> ProfileTab()
     }
 }
 
@@ -118,7 +117,7 @@ fun DashboardTab(navState: MutableState<Bundle>) {
         navController = navController,
         startDestination = Screen.Dashboard
     ) {
-        composable(Screen.Dashboard) { Dashboard() }
+        composable(Screen.Dashboard) { Dashboard(navController) }
         composable(Screen.DashboardDetail) {
             Text("Some Dashboard detail")
         }
@@ -126,8 +125,7 @@ fun DashboardTab(navState: MutableState<Bundle>) {
 }
 
 @Composable
-fun Dashboard() {
-    val navController = AmbientNavController.current
+fun Dashboard(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
         Text(text = Screen.Dashboard.title)
         Button(
