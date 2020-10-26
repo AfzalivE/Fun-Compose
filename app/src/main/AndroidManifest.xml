@@ -13,13 +13,21 @@
         <activity
             android:name=".navigation.NavActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.FunCompose.NoActionBar">
+            android:theme="@style/Theme.FunCompose.NoActionBar" />
+
+        <activity android:name=".animations.AnimActivity" />
+
+        <activity-alias
+            android:name="home"
+            android:targetActivity=".navigation.NavActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+
+        </activity-alias>
     </application>
 
 </manifest>
