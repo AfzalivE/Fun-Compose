@@ -90,20 +90,20 @@ fun defineButtonTransitions(): TransitionDefinition<ButtonState> {
 @Composable
 fun LineButton() {
     var press by remember { mutableStateOf(false) }
-//    val yPos = animate(if (!press) 16.dp else 0.dp)
-//    val xPos = animate(
-//        if (!press) 0.dp else (-90).dp, spring(
-//            dampingRatio = Spring.DampingRatioMediumBouncy,
-//            stiffness = Spring.StiffnessLow
-//        )
-//    )
-//    val width = animate(if (!press) 64.dp else 54.dp)
-//    val height = animate(if (!press) 4.dp else 50.dp)
-//    val iconOpacity = animate(if (!press) 0f else 1f)
-//    val cornerRadius = animate(if (!press) 1.dp else 16.dp)
-//
-//    val firstColor = animate(if (!press) lightGray else Color.White)
-//    val secondColor = animate(if (!press) Color.White else lightGray)
+    val yPos = animate(if (!press) 16.dp else 0.dp)
+    val xPos = animate(
+        if (!press) 0.dp else (-90).dp, spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    val width = animate(if (!press) 64.dp else 54.dp)
+    val height = animate(if (!press) 4.dp else 50.dp)
+    val iconOpacity = animate(if (!press) 0f else 1f)
+    val cornerRadius = animate(if (!press) 1.dp else 16.dp)
+
+    val firstColor = animate(if (!press) lightGray else Color.White)
+    val secondColor = animate(if (!press) Color.White else lightGray)
 
     val otherGray = animate(if (!press) Color.White else Color(0x22B6C9E7))
 
@@ -142,7 +142,7 @@ fun LineButton() {
 
         val outline2 = RoundedCornerShape(16.dp).createOutline(size = size, density = this)
         LinearGradient(
-            colors = listOf(transitionState[topLeftColor], transitionState[bottomRightColor]),
+            colors = listOf(firstColor, secondColor),
             Offset.Zero.x, Offset.Zero.y, size.width, size.height
         ).let {
             drawOutline(
@@ -168,7 +168,6 @@ fun LineButton() {
                 value = press,
                 onValueChange = {
                     press = it
-                    buttonState.value = if (it) ButtonState.NORMAL else ButtonState.PRESSED
                 }
             )
             .padding(ButtonConstants.DefaultContentPadding),
@@ -181,25 +180,25 @@ fun LineButton() {
             Box(
                 alignment = Alignment.Center,
                 modifier = Modifier.offset(
-                    transitionState[xPos], transitionState[yPos]
+                    xPos, yPos
                 ).then(
                     Modifier.drawShadow(
                         elevation = 4.dp,
                         shape = RoundedCornerShape(10.dp)
                     )
                 ).then(
-                    Modifier.size(transitionState[lineWidth], transitionState[lineHeight])
+                    Modifier.size(width, height)
                 ).then(
                     Modifier.background(
                         color = purple,
-                        shape = RoundedCornerShape(CornerSize(transitionState[cornerRadius]))
+                        shape = RoundedCornerShape(CornerSize(cornerRadius))
                     )
                 )
             ) {
                 Box(
                     modifier =
                     Modifier
-                        .then(Modifier.drawOpacity(transitionState[iconOpacity]))
+                        .then(Modifier.drawOpacity(iconOpacity))
                         .then(Modifier.padding(14.dp, 14.dp))
                         .then(Modifier.border(1.dp, Color.White, RoundedCornerShape(7.dp)))
                 ) {
