@@ -1,20 +1,16 @@
 package com.afzaln.funcompose.buttonanimation
 
-import androidx.compose.animation.ColorPropKey
-import androidx.compose.animation.DpPropKey
 import androidx.compose.animation.animate
-import androidx.compose.animation.core.*
-import androidx.compose.animation.transition
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonConstants
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
@@ -22,70 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.draw.drawShadow
+import androidx.compose.ui.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.afzaln.funcompose.ui.FunComposeTheme
 import com.afzaln.funcompose.ui.purple
-
-val yPos = DpPropKey()
-val xPos = DpPropKey()
-val lineWidth = DpPropKey()
-val lineHeight = DpPropKey()
-val iconOpacity = FloatPropKey()
-val cornerRadius = DpPropKey()
-
-val topLeftColor = ColorPropKey()
-val bottomRightColor = ColorPropKey()
-
-val lightGray = Color(0xFFD8E6FB)
-
-enum class ButtonState {
-    INITIAL, NORMAL, PRESSED
-}
-
-fun defineButtonTransitions(): TransitionDefinition<ButtonState> {
-    return transitionDefinition {
-        state(ButtonState.INITIAL) {
-            this[yPos] = 16.dp
-            this[xPos] = 0.dp
-            this[lineWidth] = 64.dp
-            this[lineHeight] = 4.dp
-            this[iconOpacity] = 0f
-            this[cornerRadius] = 1.dp
-            this[topLeftColor] = lightGray
-            this[bottomRightColor] = Color.White
-        }
-        state(ButtonState.NORMAL) {
-            this[yPos] = 16.dp
-            this[xPos] = 0.dp
-            this[lineWidth] = 64.dp
-            this[lineHeight] = 4.dp
-            this[iconOpacity] = 0f
-            this[cornerRadius] = 1.dp
-            this[topLeftColor] = lightGray
-            this[bottomRightColor] = Color.White
-        }
-        state(ButtonState.PRESSED) {
-            this[yPos] = 0.dp
-            this[xPos] = (-90).dp
-            this[lineWidth] = 54.dp
-            this[lineHeight] = 50.dp
-            this[iconOpacity] = 1f
-            this[cornerRadius] = 16.dp
-            this[topLeftColor] = Color.White
-            this[bottomRightColor] = lightGray
-        }
-
-        transition(ButtonState.NORMAL to ButtonState.PRESSED) {
-            yPos using spring(dampingRatio = Spring.DampingRatioLowBouncy)
-        }
-        transition(ButtonState.PRESSED to ButtonState.NORMAL) {
-            yPos using spring(dampingRatio = Spring.DampingRatioLowBouncy)
-        }
-    }
-}
 
 @Composable
 fun LineButton() {
@@ -97,72 +39,40 @@ fun LineButton() {
             stiffness = Spring.StiffnessLow
         )
     )
-    val width = animate(if (!press) 64.dp else 54.dp)
-    val height = animate(if (!press) 4.dp else 50.dp)
+    val lineWidth = animate(if (!press) 64.dp else 54.dp)
+    val lineHeight = animate(if (!press) 4.dp else 50.dp)
     val iconOpacity = animate(if (!press) 0f else 1f)
     val cornerRadius = animate(if (!press) 1.dp else 16.dp)
+
+    val lightGray = Color(0xFFD8E6FB)
 
     val firstColor = animate(if (!press) lightGray else Color.White)
     val secondColor = animate(if (!press) Color.White else lightGray)
 
-    val otherGray = animate(if (!press) Color.White else Color(0x22B6C9E7))
-
-    val bigWidth = 200.dp
-    val bigHeight = 60.dp
-
-    val buttonState = remember { mutableStateOf(ButtonState.INITIAL) }
-    val transitionDef = defineButtonTransitions()
-
-    val toState = if (buttonState.value == ButtonState.NORMAL) {
-        ButtonState.PRESSED
-    } else {
-        ButtonState.NORMAL
-    }
-
-    val transitionState = transition(
-        definition = transitionDef,
-        initState = buttonState.value,
-        toState = toState
-    )
-
-    Canvas(
-        modifier = Modifier.preferredSize(200.dp, 60.dp)
-    ) {
-
-        val outline1 = RoundedCornerShape(16.dp).createOutline(size = size, density = this)
-        SolidColor(
-            value = otherGray,
-        ).let {
-            drawOutline(
-                outline = outline1,
-                brush = it,
-                blendMode = BlendMode.SrcOver
-            )
-        }
-
-        val outline2 = RoundedCornerShape(16.dp).createOutline(size = size, density = this)
-        LinearGradient(
-            colors = listOf(firstColor, secondColor),
-            Offset.Zero.x, Offset.Zero.y, size.width, size.height
-        ).let {
-            drawOutline(
-                outline = outline2,
-                brush = it,
-//                blendMode = BlendMode.DstOver
-            )
-        }
-    }
+    val buttonWidth = 200.dp
+    val buttonHeight = 60.dp
 
     Box(
+        alignment = Alignment.Center,
         modifier = Modifier
-            .preferredSize(bigWidth, bigHeight)
-//                Modifier.background(
-//                    brush = LinearGradient(
-//                        colors = listOf(firstColor, secondColor),
-//                        Offset.Zero.x, Offset.Zero.y, bigWidth.value, bigHeight.value
-//                    ),
-//                    shape = RoundedCornerShape(16.dp)
-//                )
+            .drawShadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(20.dp),
+                clip = false
+            )
+            .preferredSize(buttonWidth, buttonHeight)
+            .drawBehind {
+                val outline2 = RoundedCornerShape(16.dp).createOutline(size = size, density = this)
+                LinearGradient(
+                    colors = listOf(firstColor, secondColor),
+                    Offset.Zero.x, Offset.Zero.y, size.width, size.height
+                ).let {
+                    drawOutline(
+                        outline = outline2,
+                        brush = it,
+                    )
+                }
+            }
             .toggleable(
                 indication = null,
                 value = press,
@@ -170,37 +80,30 @@ fun LineButton() {
                     press = it
                 }
             )
-            .padding(ButtonConstants.DefaultContentPadding),
-        alignment = Alignment.Center
     ) {
         Box(
             alignment = Alignment.Center
         ) {
             Text("Button")
             Box(
-                alignment = Alignment.Center,
-                modifier = Modifier.offset(
-                    xPos, yPos
-                ).then(
-                    Modifier.drawShadow(
+                modifier = Modifier
+                    .offset(xPos, yPos)
+                    .drawShadow(
                         elevation = 4.dp,
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        clip = false
                     )
-                ).then(
-                    Modifier.size(width, height)
-                ).then(
-                    Modifier.background(
+                    .size(lineWidth, lineHeight)
+                    .background(
                         color = purple,
                         shape = RoundedCornerShape(CornerSize(cornerRadius))
                     )
-                )
             ) {
                 Box(
-                    modifier =
-                    Modifier
-                        .then(Modifier.drawOpacity(iconOpacity))
-                        .then(Modifier.padding(14.dp, 14.dp))
-                        .then(Modifier.border(1.dp, Color.White, RoundedCornerShape(7.dp)))
+                    modifier = Modifier
+                        .drawOpacity(iconOpacity)
+                        .padding(14.dp, 14.dp)
+                        .border(1.dp, Color.White, RoundedCornerShape(7.dp))
                 ) {
                     Image(
                         asset = Icons.Default.Person,
