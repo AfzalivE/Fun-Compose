@@ -4,38 +4,44 @@ import android.os.Bundle
 import androidx.compose.foundation.Text
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.KEY_ROUTE
 
-sealed class Screen(val title: String) {
+fun NavBackStackEntry.getRoute(): String {
+   return arguments?.getString(KEY_ROUTE) ?: ""
+}
+
+sealed class Screen(val route: String) {
     object Profile : Screen("Profile")
-    object Dashboard : Screen("Dashboard")
+    object Dashboard : Screen("Dashboard") {
+        val routeWithArg: String = "$route?arg={arg}"
+        fun withArg(arg: String): String = routeWithArg.replace("{arg}", arg)
+    }
     object Phrases : Screen("Phrases")
-    object PhraseDetail : Screen("PhraseDetail")
+    object PhraseDetail : Screen("PhraseDetail?phrase={phrase}") {
+        fun routeWithPhrase(phrase: String): String = route.replace("{phrase}", phrase)
+    }
     object DashboardDetail : Screen("DashboardDetail")
 
-    /** hack to generate the same Destination ID that the Compose Navigation lib generates **/
-    val id: Int
-        get() {
-            return hashCode() + 0x00010000
-        }
-
+//
     fun saveState(): Bundle {
-        return bundleOf(KEY_TITLE to title)
+        return bundleOf(KEY_SCREEN to route)
     }
 
     companion object {
         fun restoreState(bundle: Bundle): Screen {
-            val title = bundle.getString(KEY_TITLE, Profile.title)
+            val title = bundle.getString(KEY_SCREEN, Profile.route)
             return when (title) {
-                Profile.title -> Profile
-                Dashboard.title -> Dashboard
-                DashboardDetail.title -> DashboardDetail
-                Phrases.title -> Phrases
-                PhraseDetail.title -> PhraseDetail
+                Profile.route         -> Profile
+                Dashboard.route       -> Dashboard
+                DashboardDetail.route -> DashboardDetail
+                Phrases.route         -> Phrases
+                PhraseDetail.route    -> PhraseDetail
                 else                  -> Profile
             }
         }
 
-        const val KEY_TITLE = "title"
+        const val KEY_SCREEN = "route"
     }
 }
 

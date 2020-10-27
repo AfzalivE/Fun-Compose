@@ -14,10 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.phrases
 import com.afzaln.funcompose.ui.FunComposeTheme
@@ -40,11 +41,11 @@ fun SimpleNavApp() {
 @Composable
 fun SimpleNav() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = Screen.Profile) {
-        composable(Screen.Profile) { Profile(navController) }
-        composable(Screen.Dashboard) { backStackEntry ->
+    NavHost(navController, startDestination = Screen.Profile.route) {
+        composable(Screen.Profile.route) { Profile(navController) }
+        composable(Screen.Dashboard.routeWithArg) { backStackEntry ->
             Dashboard(
-                title = backStackEntry.arguments?.get("title") as String
+                title = backStackEntry.arguments?.getString("arg") ?: ""
             )
         }
     }
@@ -53,9 +54,9 @@ fun SimpleNav() {
 @Composable
 fun Profile(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        Text(text = Screen.Profile.title)
+        Text(text = Screen.Profile.route)
         Button(
-            onClick = { navController.navigate(Screen.Dashboard, bundleOf("title" to "Args from Profile")) },
+            onClick = { navController.navigate(Screen.Dashboard.withArg("Args from Profile")) },
         ) {
             Text("Open Dashboard")
         }
@@ -63,7 +64,7 @@ fun Profile(navController: NavController) {
 }
 
 @Composable
-fun Dashboard(title: String = Screen.Dashboard.title) {
+fun Dashboard(title: String = Screen.Dashboard.route) {
     Column(
         modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp)),
         horizontalAlignment = Alignment.End
@@ -85,8 +86,7 @@ fun Phrases(navController: NavController? = null) {
                     text = { Text(text = it) },
                     modifier = Modifier.clickable(onClick = {
                         navController.navigate(
-                            Screen.PhraseDetail,
-                            bundleOf("phrase" to it)
+                            Screen.PhraseDetail.routeWithPhrase(it)
                         )
                     })
                 )

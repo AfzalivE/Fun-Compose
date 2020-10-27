@@ -50,10 +50,10 @@ fun NavPhrases(navState: MutableState<Bundle>) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Phrases
+        startDestination = Screen.Phrases.route
     ) {
-        composable(Screen.Phrases) { Phrases(navController) }
-        composable(Screen.PhraseDetail) { PhraseDetail(it.arguments?.get("phrase") as String) }
+        composable(Screen.Phrases.route) { Phrases(navController) }
+        composable(Screen.PhraseDetail.route) { PhraseDetail(it.arguments?.get("phrase") as String) }
     }
 }
 

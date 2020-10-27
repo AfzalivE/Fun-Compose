@@ -7,10 +7,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.afzaln.funcompose.navigation.Screen
+import com.afzaln.funcompose.navigation.getRoute
 import com.afzaln.funcompose.ui.FunComposeTheme
 
 @Composable
@@ -25,12 +25,12 @@ fun TopBarNavApp() {
                 topBar = {
                     TopAppBar(
                         title = {
-                            Text(current?.destination?.toScreen()?.title ?: "")
+                            Text(current?.getRoute() ?: "")
                         },
                         actions = {
                             IconButton(
                                 onClick = {
-                                    navController.navigate(Screen.Dashboard)
+                                    navController.navigate(Screen.Dashboard.route)
                                 }, icon = {
                                     Icon(asset = Icons.Default.Settings)
                                 }
@@ -56,17 +56,9 @@ fun BasicNav(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Profile
+        startDestination = Screen.Profile.route
     ) {
-        composable(Screen.Profile) { Profile(navController) }
-        composable(Screen.Dashboard) { Dashboard() }
-    }
-}
-
-fun NavDestination.toScreen(): Screen {
-    return when (id) {
-        Screen.Profile.id   -> Screen.Profile
-        Screen.Dashboard.id -> Screen.Dashboard
-        else                -> Screen.Profile
+        composable(Screen.Profile.route) { Profile(navController) }
+        composable(Screen.Dashboard.route) { Dashboard() }
     }
 }

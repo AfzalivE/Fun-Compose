@@ -42,7 +42,7 @@ fun BottomNavApp(
                 topBar = {
                     TopAppBar(
                         title = {
-                            Text(currentTab.title)
+                            Text(currentTab.route)
                         }
                     )
                 }, bodyContent = {
@@ -90,7 +90,7 @@ fun SingleNavTabContent(screen: Screen) {
 @Composable
 fun ProfileTab() {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        Text(text = Screen.Profile.title)
+        Text(text = Screen.Profile.route)
     }
 }
 
@@ -115,10 +115,10 @@ fun DashboardTab(navState: MutableState<Bundle>) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Dashboard
+        startDestination = Screen.Dashboard.route
     ) {
-        composable(Screen.Dashboard) { Dashboard(navController) }
-        composable(Screen.DashboardDetail) {
+        composable(Screen.Dashboard.route) { Dashboard(navController) }
+        composable(Screen.DashboardDetail.route) {
             Text("Some Dashboard detail")
         }
     }
@@ -127,25 +127,25 @@ fun DashboardTab(navState: MutableState<Bundle>) {
 @Composable
 fun Dashboard(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        Text(text = Screen.Dashboard.title)
+        Text(text = Screen.Dashboard.route)
         Button(
             content = { Text("Open Dashboard Detail") },
             onClick = {
-                navController.navigate(Screen.DashboardDetail)
+                navController.navigate(Screen.DashboardDetail.route)
             }
         )
     }
 }
 
-/**
- * Saver to save and restore the current tab across config change and process death.
- */
+///**
+// * Saver to save and restore the current tab across config change and process death.
+// */
 fun ScreenSaver(
 ): Saver<MutableState<Screen>, *> = Saver(
     save = { it.value.saveState() },
     restore = { mutableStateOf(Screen.restoreState(it)) }
 )
-
+//
 fun NavStateSaver(): Saver<MutableState<Bundle>, out Any> = Saver(
     save = { it.value },
     restore = { mutableStateOf(it) }
