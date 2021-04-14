@@ -10,14 +10,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,19 +51,22 @@ import com.afzaln.funcompose.ui.purple
 fun LineButton() {
     var press by remember { mutableStateOf(false) }
     val yPos by animateDpAsState(
-        if (!press) 16.dp else 0.dp, spring(
+        if (!press) 16.dp else 0.dp,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
     )
     val xPos by animateDpAsState(
-        if (!press) 0.dp else (-90).dp, spring(
+        if (!press) 0.dp else (-90).dp,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
     )
     val lineWidth by animateDpAsState(
-        if (!press) 64.dp else 54.dp, spring(
+        if (!press) 64.dp else 54.dp,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -64,7 +74,8 @@ fun LineButton() {
 
     // LowBouncy because of https://issuetracker.google.com/issues/171727052
     val lineHeight by animateDpAsState(
-        if (!press) 4.dp else 50.dp, spring(
+        if (!press) 4.dp else 50.dp,
+        spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -77,13 +88,15 @@ fun LineButton() {
         Color(red = 0.7152195573f, green = 0.7906422615f, blue = 0.908705771f, alpha = 0.3f)
 
     val firstColor by animateColorAsState(
-        if (!press) lightGray else Color.White, spring(
+        if (!press) lightGray else Color.White,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
     )
     val secondColor by animateColorAsState(
-        if (!press) Color.White else lightGray, spring(
+        if (!press) Color.White else lightGray,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -91,7 +104,8 @@ fun LineButton() {
 
     // NoBouncy because of https://issuetracker.google.com/issues/171727052
     val secondOutlineColor by animateColorAsState(
-        if (!press) Color.White else otherGray, spring(
+        if (!press) Color.White else otherGray,
+        spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -99,7 +113,8 @@ fun LineButton() {
 
     // NoBouncy because of https://issuetracker.google.com/issues/171727052
     val firstOutlineColor by animateColorAsState(
-        if (!press) otherGray else Color.White, spring(
+        if (!press) otherGray else Color.White,
+        spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -109,14 +124,16 @@ fun LineButton() {
     val buttonHeight = 60.dp
 
     val shadow by animateIntAsState(
-        if (!press) -30 else 20, spring(
+        if (!press) -30 else 20,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
     )
 
     val shadowElevation by animateDpAsState(
-        if (!press) 10.dp else 0.dp, spring(
+        if (!press) 10.dp else 0.dp,
+        spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
         )
@@ -162,7 +179,8 @@ fun LineButton() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                "Button", style = TextStyle(
+                "Button",
+                style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -217,9 +235,11 @@ private fun Modifier.gradientWithOutline(
     outlineBottomRightColor: Color,
 ): Modifier {
     return drawBehind {
-        val outline2 = RoundedCornerShape(16.dp).createOutline(size = size,
+        val outline2 = RoundedCornerShape(16.dp).createOutline(
+            size = size,
             density = this,
-            layoutDirection = LayoutDirection.Ltr)
+            layoutDirection = LayoutDirection.Ltr
+        )
         linearGradient(
             colors = listOf(topLeftColor, bottomRightColor),
             start = Offset.Zero,
@@ -231,9 +251,11 @@ private fun Modifier.gradientWithOutline(
             )
         }
 
-        val outline1 = RoundedCornerShape(16.dp).createOutline(size = size,
+        val outline1 = RoundedCornerShape(16.dp).createOutline(
+            size = size,
             density = this,
-            layoutDirection = LayoutDirection.Ltr)
+            layoutDirection = LayoutDirection.Ltr
+        )
         linearGradient(
             colors = listOf(outlineTopLeftColor, outlineBottomRightColor),
             start = Offset.Zero,

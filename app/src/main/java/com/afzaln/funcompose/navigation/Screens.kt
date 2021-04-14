@@ -8,7 +8,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.KEY_ROUTE
 
 fun NavBackStackEntry.getRoute(): String {
-   return arguments?.getString(KEY_ROUTE) ?: ""
+    return arguments?.getString(KEY_ROUTE) ?: ""
 }
 
 sealed class Screen(val route: String) {
@@ -32,12 +32,12 @@ sealed class Screen(val route: String) {
         fun restoreState(bundle: Bundle): Screen {
             val title = bundle.getString(KEY_SCREEN, Profile.route)
             return when (title) {
-                Profile.route         -> Profile
-                Dashboard.route       -> Dashboard
+                Profile.route -> Profile
+                Dashboard.route -> Dashboard
                 DashboardDetail.route -> DashboardDetail
-                Phrases.route         -> Phrases
-                PhraseDetail.route    -> PhraseDetail
-                else                  -> Profile
+                Phrases.route -> Phrases
+                PhraseDetail.route -> PhraseDetail
+                else -> Profile
             }
         }
 

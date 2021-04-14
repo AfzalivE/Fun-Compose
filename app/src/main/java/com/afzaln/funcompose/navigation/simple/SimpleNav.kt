@@ -54,9 +54,11 @@ fun SimpleNav() {
 
 @Composable
 fun Profile(navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .then(Modifier.padding(8.dp))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(Modifier.padding(8.dp))
+    ) {
         Text(text = Screen.Profile.route)
         Button(
             onClick = { navController.navigate(Screen.Dashboard.withArg("Args from Profile")) },
@@ -84,19 +86,23 @@ fun Dashboard(title: String = Screen.Dashboard.route) {
 
 @Composable
 fun Phrases(navController: NavController? = null) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .then(Modifier.padding(8.dp))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(Modifier.padding(8.dp))
+    ) {
         LazyColumn {
             items(phrases) {
                 if (navController != null) {
                     ListItem(
                         text = { Text(text = it) },
-                        modifier = Modifier.clickable(onClick = {
-                            navController.navigate(
-                                Screen.PhraseDetail.routeWithPhrase(it)
-                            )
-                        })
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                navController.navigate(
+                                    Screen.PhraseDetail.routeWithPhrase(it)
+                                )
+                            }
+                        )
                     )
                 } else {
                     ListItem(text = { Text(text = it) })
@@ -105,4 +111,3 @@ fun Phrases(navController: NavController? = null) {
         }
     }
 }
-

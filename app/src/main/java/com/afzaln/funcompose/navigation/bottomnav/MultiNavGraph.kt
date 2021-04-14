@@ -1,7 +1,10 @@
 package com.afzaln.funcompose.navigation.bottomnav
 
 import android.os.Bundle
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -23,10 +26,10 @@ fun MultiNavTabContent(screen: Screen) {
     val dashboardNavState = rememberSaveable(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
     val phrasesNavState = rememberSaveable(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
     when (screen) {
-        Screen.Profile   -> ProfileTab()
+        Screen.Profile -> ProfileTab()
         Screen.Dashboard -> DashboardTab(dashboardNavState)
-        Screen.Phrases   -> NavPhrases(phrasesNavState)
-        else             -> ProfileTab()
+        Screen.Phrases -> NavPhrases(phrasesNavState)
+        else -> ProfileTab()
     }
 }
 
@@ -57,4 +60,3 @@ fun NavPhrases(navState: MutableState<Bundle>) {
         composable(Screen.PhraseDetail.route) { PhraseDetail(it.arguments?.get("phrase") as String) }
     }
 }
-

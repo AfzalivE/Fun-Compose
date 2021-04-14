@@ -25,9 +25,11 @@ class AnimActivity : AppCompatActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Box(
-                        modifier = Modifier.then(Modifier.fillMaxSize()).then(Modifier.background(
-                            color = lightGray
-                        )),
+                        modifier = Modifier.then(Modifier.fillMaxSize()).then(
+                            Modifier.background(
+                                color = lightGray
+                            )
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
                         LineButton()

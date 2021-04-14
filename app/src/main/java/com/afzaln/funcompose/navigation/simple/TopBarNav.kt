@@ -1,12 +1,22 @@
 package com.afzaln.funcompose.navigation.simple
 
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.getRoute
 import com.afzaln.funcompose.ui.FunComposeTheme
@@ -35,7 +45,8 @@ fun TopBarNavApp() {
                             }
                         }
                     )
-                }, content = {
+                },
+                content = {
                     BasicNav(navController)
                 }
             )

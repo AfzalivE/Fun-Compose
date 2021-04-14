@@ -4,18 +4,34 @@ import android.os.Bundle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.afzaln.funcompose.navigation.Screen
 import com.afzaln.funcompose.navigation.simple.Phrases
 import com.afzaln.funcompose.ui.FunComposeTheme
@@ -43,7 +59,8 @@ fun BottomNavApp(
                             Text(currentTab.route)
                         }
                     )
-                }, content = {
+                },
+                content = {
                     bodyContent(currentTab)
                 },
                 bottomBar = {
@@ -87,9 +104,11 @@ fun SingleNavTabContent(screen: Screen) {
 
 @Composable
 fun ProfileTab() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .then(Modifier.padding(8.dp))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(Modifier.padding(8.dp))
+    ) {
         Text(text = Screen.Profile.route)
     }
 }
@@ -126,9 +145,11 @@ fun DashboardTab(navState: MutableState<Bundle>) {
 
 @Composable
 fun Dashboard(navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .then(Modifier.padding(8.dp))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(Modifier.padding(8.dp))
+    ) {
         Text(text = Screen.Dashboard.route)
         Button(
             content = { Text("Open Dashboard Detail") },
@@ -139,11 +160,10 @@ fun Dashboard(navController: NavController) {
     }
 }
 
-///**
+// /**
 // * Saver to save and restore the current tab across config change and process death.
 // */
-fun ScreenSaver(
-): Saver<MutableState<Screen>, *> = Saver(
+fun ScreenSaver(): Saver<MutableState<Screen>, *> = Saver(
     save = { it.value.saveState() },
     restore = { mutableStateOf(Screen.restoreState(it)) }
 )
