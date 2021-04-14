@@ -2,7 +2,7 @@ package com.afzaln.funcompose.navigation.bottomnav
 
 import android.os.Bundle
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,8 +20,8 @@ fun MultiBottomNavApp() {
 
 @Composable
 fun MultiNavTabContent(screen: Screen) {
-    val dashboardNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
-    val phrasesNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
+    val dashboardNavState = rememberSaveable(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
+    val phrasesNavState = rememberSaveable(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
     when (screen) {
         Screen.Profile   -> ProfileTab()
         Screen.Dashboard -> DashboardTab(dashboardNavState)
@@ -34,12 +34,13 @@ fun MultiNavTabContent(screen: Screen) {
 fun NavPhrases(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
 
-    onCommit {
+    DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { navController, _, _ ->
             navState.value = navController.saveState() ?: Bundle()
         }
         navController.addOnDestinationChangedListener(callback)
         navController.restoreState(navState.value)
+
         onDispose {
             navController.removeOnDestinationChangedListener(callback)
             // workaround for issue where back press is intercepted

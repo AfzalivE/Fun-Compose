@@ -1,15 +1,16 @@
 package com.afzaln.funcompose.navigation.simple
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +54,9 @@ fun SimpleNav() {
 
 @Composable
 fun Profile(navController: NavController) {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .then(Modifier.padding(8.dp))) {
         Text(text = Screen.Profile.route)
         Button(
             onClick = { navController.navigate(Screen.Dashboard.withArg("Args from Profile")) },
@@ -66,7 +69,9 @@ fun Profile(navController: NavController) {
 @Composable
 fun Dashboard(title: String = Screen.Dashboard.route) {
     Column(
-        modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp)),
+        modifier = Modifier
+            .fillMaxSize()
+            .then(Modifier.padding(8.dp)),
         horizontalAlignment = Alignment.End
     ) {
         Text(text = title)
@@ -79,19 +84,23 @@ fun Dashboard(title: String = Screen.Dashboard.route) {
 
 @Composable
 fun Phrases(navController: NavController? = null) {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
-        LazyColumnFor(items = phrases) {
-            if (navController != null) {
-                ListItem(
-                    text = { Text(text = it) },
-                    modifier = Modifier.clickable(onClick = {
-                        navController.navigate(
-                            Screen.PhraseDetail.routeWithPhrase(it)
-                        )
-                    })
-                )
-            } else {
-                ListItem(text = { Text(text = it) })
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .then(Modifier.padding(8.dp))) {
+        LazyColumn {
+            items(phrases) {
+                if (navController != null) {
+                    ListItem(
+                        text = { Text(text = it) },
+                        modifier = Modifier.clickable(onClick = {
+                            navController.navigate(
+                                Screen.PhraseDetail.routeWithPhrase(it)
+                            )
+                        })
+                    )
+                } else {
+                    ListItem(text = { Text(text = it) })
+                }
             }
         }
     }

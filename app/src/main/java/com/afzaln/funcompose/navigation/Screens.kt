@@ -1,7 +1,7 @@
 package com.afzaln.funcompose.navigation
 
 import android.os.Bundle
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.navigation.NavBackStackEntry

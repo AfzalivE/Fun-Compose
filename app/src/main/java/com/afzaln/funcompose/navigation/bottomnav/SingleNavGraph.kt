@@ -1,8 +1,6 @@
 package com.afzaln.funcompose.navigation.bottomnav
 
 import android.os.Bundle
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,8 +10,8 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.Saver
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -33,7 +31,7 @@ fun SingleBottomNavApp() {
 fun BottomNavApp(
     bodyContent: @Composable (Screen) -> Unit
 ) {
-    var currentTab by rememberSavedInstanceState(saver = ScreenSaver()) { mutableStateOf(Screen.Profile) }
+    var currentTab by rememberSaveable(saver = ScreenSaver()) { mutableStateOf(Screen.Profile) }
 
     FunComposeTheme {
         // A surface container using the 'background' color from the theme
@@ -45,25 +43,25 @@ fun BottomNavApp(
                             Text(currentTab.route)
                         }
                     )
-                }, bodyContent = {
+                }, content = {
                     bodyContent(currentTab)
                 },
                 bottomBar = {
                     BottomNavigation {
                         BottomNavigationItem(
-                            icon = { Icon(asset = Icons.Default.AccountCircle) },
+                            icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null) },
                             label = { Text("Profile") },
                             selected = currentTab == Screen.Profile,
                             onClick = { currentTab = Screen.Profile }
                         )
                         BottomNavigationItem(
-                            icon = { Icon(asset = Icons.Default.ShoppingCart) },
+                            icon = { Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = null) },
                             label = { Text("Dashboard") },
                             selected = currentTab == Screen.Dashboard,
                             onClick = { currentTab = Screen.Dashboard }
                         )
                         BottomNavigationItem(
-                            icon = { Icon(asset = Icons.Default.List) },
+                            icon = { Icon(imageVector = Icons.Default.List, contentDescription = null) },
                             label = { Text("Phrases") },
                             selected = currentTab == Screen.Phrases,
                             onClick = { currentTab = Screen.Phrases }
@@ -77,7 +75,7 @@ fun BottomNavApp(
 
 @Composable
 fun SingleNavTabContent(screen: Screen) {
-    val dashboardNavState = rememberSavedInstanceState(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
+    val dashboardNavState = rememberSaveable(saver = NavStateSaver()) { mutableStateOf(Bundle()) }
 
     when (screen) {
         Screen.Profile -> ProfileTab()
@@ -89,7 +87,9 @@ fun SingleNavTabContent(screen: Screen) {
 
 @Composable
 fun ProfileTab() {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .then(Modifier.padding(8.dp))) {
         Text(text = Screen.Profile.route)
     }
 }
@@ -98,7 +98,7 @@ fun ProfileTab() {
 fun DashboardTab(navState: MutableState<Bundle>) {
     val navController = rememberNavController()
 
-    onCommit {
+    DisposableEffect(Unit) {
         val callback = NavController.OnDestinationChangedListener { controller, _, _ ->
             navState.value = controller.saveState() ?: Bundle()
         }
@@ -126,7 +126,9 @@ fun DashboardTab(navState: MutableState<Bundle>) {
 
 @Composable
 fun Dashboard(navController: NavController) {
-    Column(modifier = Modifier.fillMaxSize().then(Modifier.padding(8.dp))) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .then(Modifier.padding(8.dp))) {
         Text(text = Screen.Dashboard.route)
         Button(
             content = { Text("Open Dashboard Detail") },

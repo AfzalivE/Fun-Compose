@@ -1,7 +1,5 @@
 package com.afzaln.funcompose.navigation.simple
 
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -31,13 +29,13 @@ fun TopBarNavApp() {
                             IconButton(
                                 onClick = {
                                     navController.navigate(Screen.Dashboard.route)
-                                }, icon = {
-                                    Icon(asset = Icons.Default.Settings)
                                 }
-                            )
+                            ) {
+                                Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                            }
                         }
                     )
-                }, bodyContent = {
+                }, content = {
                     BasicNav(navController)
                 }
             )

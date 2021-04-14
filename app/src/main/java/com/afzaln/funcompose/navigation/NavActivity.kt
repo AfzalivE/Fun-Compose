@@ -1,8 +1,8 @@
 package com.afzaln.funcompose.navigation
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.setContent
 import com.afzaln.funcompose.navigation.bottomnav.MultiBottomNavApp
 
 class NavActivity : AppCompatActivity() {
