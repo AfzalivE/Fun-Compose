@@ -45,7 +45,7 @@ fun SingleBottomNavApp() {
 
 @Composable
 fun BottomNavApp(
-    bodyContent: @Composable (Screen) -> Unit
+    content: @Composable (Screen) -> Unit
 ) {
     var currentTab by rememberSaveable(saver = ScreenSaver()) { mutableStateOf(Screen.Profile) }
 
@@ -61,7 +61,7 @@ fun BottomNavApp(
                     )
                 },
                 content = {
-                    bodyContent(currentTab)
+                    content(currentTab)
                 },
                 bottomBar = {
                     BottomNavigation {
